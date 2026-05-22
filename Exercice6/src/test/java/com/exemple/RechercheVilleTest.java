@@ -17,23 +17,33 @@ class RechercheVilleTest {
     }
 
     @Test
-    @DisplayName("Une recherche de moins de 2 caracteres leve une NotImplementedException")
-    void search_withLessThanTwoCharacters_throws_NotImplementedException() {
+    @DisplayName("Une recherche de moins de 2 caracteres leve une NotFoundException")
+    void search_withLessThanTwoCharacters_throws_NotFoundException() {
         // Given
         String mot = "V";
 
         // When / Then
-        assertThrows(NotImplementedException.class, () -> recherche.Rechercher(mot));
+        assertThrows(NotFoundException.class, () -> recherche.Rechercher(mot));
     }
 
     @Test
-    @DisplayName("Une recherche vide leve une NotImplementedException")
-    void search_withEmptyString_throws_NotImplementedException() {
+    @DisplayName("Une recherche vide leve une NotFoundException")
+    void search_withEmptyString_throws_NotFoundException() {
         // Given
         String mot = "";
 
         // When / Then
-        assertThrows(NotImplementedException.class, () -> recherche.Rechercher(mot));
+        assertThrows(NotFoundException.class, () -> recherche.Rechercher(mot));
+    }
+
+    @Test
+    @DisplayName("Une recherche null leve une NotFoundException")
+    void search_withNull_throws_NotFoundException() {
+        // Given
+        String mot = null;
+
+        // When / Then
+        assertThrows(NotFoundException.class, () -> recherche.Rechercher(mot));
     }
 
     @Test

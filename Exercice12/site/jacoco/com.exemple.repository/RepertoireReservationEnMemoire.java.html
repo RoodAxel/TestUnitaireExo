@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="fr"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>RepertoireReservationEnMemoire.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Exercice12</a> &gt; <a href="index.source.html" class="el_package">com.exemple.repository</a> &gt; <span class="el_source">RepertoireReservationEnMemoire.java</span></div><h1>RepertoireReservationEnMemoire.java</h1><pre class="source lang-java linenums">package com.exemple.repository;
+
+import com.exemple.model.Reservation;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.atomic.AtomicLong;
+import java.util.stream.Collectors;
+import org.springframework.stereotype.Repository;
+
+@Repository
+<span class="fc" id="L14">public class RepertoireReservationEnMemoire implements RepertoireReservation {</span>
+
+<span class="fc" id="L16">    private final Map&lt;Long, Reservation&gt; reservations = new ConcurrentHashMap&lt;&gt;();</span>
+<span class="fc" id="L17">    private final AtomicLong sequence = new AtomicLong(0);</span>
+
+    @Override
+    public Reservation sauvegarder(Reservation reservation) {
+<span class="fc bfc" id="L21" title="All 2 branches covered.">        if (reservation.getId() == null) {</span>
+<span class="fc" id="L22">            reservation.setId(sequence.incrementAndGet());</span>
+        }
+<span class="fc" id="L24">        reservations.put(reservation.getId(), reservation);</span>
+<span class="fc" id="L25">        return reservation;</span>
+    }
+
+    @Override
+    public Optional&lt;Reservation&gt; trouverParId(Long id) {
+<span class="fc" id="L30">        return Optional.ofNullable(reservations.get(id));</span>
+    }
+
+    @Override
+    public List&lt;Reservation&gt; trouverParSalle(Long salleId) {
+<span class="fc" id="L35">        return reservations.values().stream()</span>
+<span class="fc" id="L36">                .filter(reservation -&gt; reservation.getSalleId().equals(salleId))</span>
+<span class="fc" id="L37">                .collect(Collectors.toList());</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.14.202510111229</span></div></body></html>

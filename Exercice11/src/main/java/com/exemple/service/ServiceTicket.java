@@ -1,5 +1,8 @@
 package com.exemple.service;
 
+import com.exemple.exception.TicketIntrouvableException;
+import com.exemple.exception.TicketInvalideException;
+import com.exemple.exception.TransitionInterditeException;
 import com.exemple.model.Priorite;
 import com.exemple.model.Statut;
 import com.exemple.model.Ticket;
@@ -10,6 +13,8 @@ import org.springframework.stereotype.Service;
 @Service
 public class ServiceTicket {
 
+    private static final int LONGUEUR_TITRE_MINIMALE = 3;
+
     private final RepertoireTicket repertoireTicket;
 
     public ServiceTicket(RepertoireTicket repertoireTicket) {
@@ -17,18 +22,40 @@ public class ServiceTicket {
     }
 
     public Ticket creerTicket(String titre, Priorite priorite) {
-        throw new UnsupportedOperationException("creerTicket n'est pas encore implémentée");
+        if (titre == null || titre.trim().length() < LONGUEUR_TITRE_MINIMALE) {
+            throw new TicketInvalideException("Le titre est obligatoire et doit contenir au moins 3 caractères utiles");
+        }
+        if (priorite == null) {
+            throw new TicketInvalideException("La priorité est obligatoire");
+        }
+        Ticket ticket = new Ticket(null, titre, priorite, Statut.OPEN);
+        return repertoireTicket.sauvegarder(ticket);
     }
 
     public Ticket trouverParId(Long id) {
-        throw new UnsupportedOperationException("trouverParId n'est pas encore implémentée");
+        return repertoireTicket.trouverParId(id)
+                .orElseThrow(() -> new TicketIntrouvableException("Ticket introuvable : " + id));
     }
 
     public List<Ticket> listerTickets() {
-        throw new UnsupportedOperationException("listerTickets n'est pas encore implémentée");
+        return repertoireTicket.trouverTous();
     }
 
     public Ticket changerStatut(Long id, Statut nouveauStatut) {
-        throw new UnsupportedOperationException("changerStatut n'est pas encore implémentée");
+        Ticket ticket = trouverParId(id);
+        if (!transitionAutorisee(ticket.getStatut(), nouveauStatut)) {
+            throw new TransitionInterditeException(
+                    "Transition de statut interdite : " + ticket.getStatut() + " vers " + nouveauStatut);
+        }
+        ticket.setStatut(nouveauStatut);
+        return repertoireTicket.sauvegarder(ticket);
+    }
+
+    private boolean transitionAutorisee(Statut actuel, Statut cible) {
+        return switch (actuel) {
+            case OPEN -> cible == Statut.IN_PROGRESS || cible == Statut.RESOLVED;
+            case IN_PROGRESS -> cible == Statut.RESOLVED;
+            case RESOLVED -> false;
+        };
     }
 }

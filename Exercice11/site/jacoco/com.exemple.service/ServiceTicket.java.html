@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="fr"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>ServiceTicket.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Exercice11</a> &gt; <a href="index.source.html" class="el_package">com.exemple.service</a> &gt; <span class="el_source">ServiceTicket.java</span></div><h1>ServiceTicket.java</h1><pre class="source lang-java linenums">package com.exemple.service;
+
+import com.exemple.exception.TicketIntrouvableException;
+import com.exemple.exception.TicketInvalideException;
+import com.exemple.exception.TransitionInterditeException;
+import com.exemple.model.Priorite;
+import com.exemple.model.Statut;
+import com.exemple.model.Ticket;
+import com.exemple.repository.RepertoireTicket;
+import java.util.List;
+import org.springframework.stereotype.Service;
+
+@Service
+public class ServiceTicket {
+
+    private static final int LONGUEUR_TITRE_MINIMALE = 3;
+
+    private final RepertoireTicket repertoireTicket;
+
+<span class="fc" id="L20">    public ServiceTicket(RepertoireTicket repertoireTicket) {</span>
+<span class="fc" id="L21">        this.repertoireTicket = repertoireTicket;</span>
+<span class="fc" id="L22">    }</span>
+
+    public Ticket creerTicket(String titre, Priorite priorite) {
+<span class="fc bfc" id="L25" title="All 4 branches covered.">        if (titre == null || titre.trim().length() &lt; LONGUEUR_TITRE_MINIMALE) {</span>
+<span class="fc" id="L26">            throw new TicketInvalideException(&quot;Le titre est obligatoire et doit contenir au moins 3 caractères utiles&quot;);</span>
+        }
+<span class="fc bfc" id="L28" title="All 2 branches covered.">        if (priorite == null) {</span>
+<span class="fc" id="L29">            throw new TicketInvalideException(&quot;La priorité est obligatoire&quot;);</span>
+        }
+<span class="fc" id="L31">        Ticket ticket = new Ticket(null, titre, priorite, Statut.OPEN);</span>
+<span class="fc" id="L32">        return repertoireTicket.sauvegarder(ticket);</span>
+    }
+
+    public Ticket trouverParId(Long id) {
+<span class="fc" id="L36">        return repertoireTicket.trouverParId(id)</span>
+<span class="fc" id="L37">                .orElseThrow(() -&gt; new TicketIntrouvableException(&quot;Ticket introuvable : &quot; + id));</span>
+    }
+
+    public List&lt;Ticket&gt; listerTickets() {
+<span class="fc" id="L41">        return repertoireTicket.trouverTous();</span>
+    }
+
+    public Ticket changerStatut(Long id, Statut nouveauStatut) {
+<span class="fc" id="L45">        Ticket ticket = trouverParId(id);</span>
+<span class="fc bfc" id="L46" title="All 2 branches covered.">        if (!transitionAutorisee(ticket.getStatut(), nouveauStatut)) {</span>
+<span class="fc" id="L47">            throw new TransitionInterditeException(</span>
+<span class="fc" id="L48">                    &quot;Transition de statut interdite : &quot; + ticket.getStatut() + &quot; vers &quot; + nouveauStatut);</span>
+        }
+<span class="fc" id="L50">        ticket.setStatut(nouveauStatut);</span>
+<span class="fc" id="L51">        return repertoireTicket.sauvegarder(ticket);</span>
+    }
+
+    private boolean transitionAutorisee(Statut actuel, Statut cible) {
+<span class="fc bfc" id="L55" title="All 3 branches covered.">        return switch (actuel) {</span>
+<span class="pc bpc" id="L56" title="1 of 4 branches missed.">            case OPEN -&gt; cible == Statut.IN_PROGRESS || cible == Statut.RESOLVED;</span>
+<span class="fc bfc" id="L57" title="All 2 branches covered.">            case IN_PROGRESS -&gt; cible == Statut.RESOLVED;</span>
+<span class="fc" id="L58">            case RESOLVED -&gt; false;</span>
+        };
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.14.202510111229</span></div></body></html>

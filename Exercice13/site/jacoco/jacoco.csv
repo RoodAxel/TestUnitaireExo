@@ -1,0 +1,14 @@
+GROUP,PACKAGE,CLASS,INSTRUCTION_MISSED,INSTRUCTION_COVERED,BRANCH_MISSED,BRANCH_COVERED,LINE_MISSED,LINE_COVERED,COMPLEXITY_MISSED,COMPLEXITY_COVERED,METHOD_MISSED,METHOD_COVERED
+Exercice13,com.exemple.repository,RepertoireCompteEnMemoire,0,40,0,0,0,9,0,6,0,6
+Exercice13,com.exemple,Application,5,3,0,0,2,1,1,1,1,1
+Exercice13,com.exemple.exception,ConflitMetierException,0,4,0,0,0,2,0,1,0,1
+Exercice13,com.exemple.exception,GestionnaireExceptions,0,30,0,0,0,4,0,4,0,4
+Exercice13,com.exemple.exception,DonneesInvalidesException,0,4,0,0,0,2,0,1,0,1
+Exercice13,com.exemple.exception,RessourceIntrouvableException,0,4,0,0,0,2,0,1,0,1
+Exercice13,com.exemple.service,ServiceCompte,0,143,1,7,0,33,1,13,0,10
+Exercice13,com.exemple.controller,CompteController,0,57,0,0,0,11,0,7,0,7
+Exercice13,com.exemple.model,Compte,0,25,0,0,0,10,0,5,0,5
+Exercice13,com.exemple.dto,VirementRequest,0,12,0,0,0,1,0,1,0,1
+Exercice13,com.exemple.dto,CreerCompteRequest,0,9,0,0,0,1,0,1,0,1
+Exercice13,com.exemple.dto,OperationRequest,0,6,0,0,0,1,0,1,0,1
+Exercice13,com.exemple.dto,ReponseErreur,0,6,0,0,0,1,0,1,0,1

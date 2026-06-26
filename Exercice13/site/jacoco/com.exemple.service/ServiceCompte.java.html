@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="fr"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>ServiceCompte.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Exercice13</a> &gt; <a href="index.source.html" class="el_package">com.exemple.service</a> &gt; <span class="el_source">ServiceCompte.java</span></div><h1>ServiceCompte.java</h1><pre class="source lang-java linenums">package com.exemple.service;
+
+import com.exemple.exception.ConflitMetierException;
+import com.exemple.exception.DonneesInvalidesException;
+import com.exemple.exception.RessourceIntrouvableException;
+import com.exemple.model.Compte;
+import com.exemple.repository.RepertoireCompte;
+import java.math.BigDecimal;
+import java.util.List;
+import org.springframework.stereotype.Service;
+
+@Service
+public class ServiceCompte {
+
+    private final RepertoireCompte repertoireCompte;
+
+<span class="fc" id="L17">    public ServiceCompte(RepertoireCompte repertoireCompte) {</span>
+<span class="fc" id="L18">        this.repertoireCompte = repertoireCompte;</span>
+<span class="fc" id="L19">    }</span>
+
+    public Compte creerCompte(String numero, String titulaire) {
+<span class="fc bfc" id="L22" title="All 2 branches covered.">        if (repertoireCompte.existeParNumero(numero)) {</span>
+<span class="fc" id="L23">            throw new ConflitMetierException(&quot;Le numéro de compte existe déjà&quot;);</span>
+        }
+<span class="fc" id="L25">        return repertoireCompte.sauvegarder(new Compte(numero, titulaire));</span>
+    }
+
+    public Compte consulterCompte(String numero) {
+<span class="fc" id="L29">        return repertoireCompte.trouverParNumero(numero)</span>
+<span class="fc" id="L30">                .orElseThrow(() -&gt; new RessourceIntrouvableException(&quot;Compte introuvable&quot;));</span>
+    }
+
+    public List&lt;Compte&gt; listerComptes() {
+<span class="fc" id="L34">        return repertoireCompte.trouverTous();</span>
+    }
+
+    public Compte deposer(String numero, BigDecimal montant) {
+<span class="fc" id="L38">        exigerMontantPositif(montant);</span>
+<span class="fc" id="L39">        Compte compte = consulterCompte(numero);</span>
+<span class="fc" id="L40">        compte.setSolde(compte.getSolde().add(montant));</span>
+<span class="fc" id="L41">        return repertoireCompte.sauvegarder(compte);</span>
+    }
+
+    public Compte retirer(String numero, BigDecimal montant) {
+<span class="fc" id="L45">        exigerMontantPositif(montant);</span>
+<span class="fc" id="L46">        Compte compte = consulterCompte(numero);</span>
+<span class="fc" id="L47">        exigerFondsSuffisants(compte, montant);</span>
+<span class="fc" id="L48">        compte.setSolde(compte.getSolde().subtract(montant));</span>
+<span class="fc" id="L49">        return repertoireCompte.sauvegarder(compte);</span>
+    }
+
+    public void virer(String numeroSource, String numeroDestination, BigDecimal montant) {
+<span class="fc" id="L53">        exigerMontantPositif(montant);</span>
+<span class="fc" id="L54">        Compte source = consulterCompte(numeroSource);</span>
+<span class="fc" id="L55">        Compte destination = consulterCompte(numeroDestination);</span>
+<span class="fc" id="L56">        exigerFondsSuffisants(source, montant);</span>
+<span class="fc" id="L57">        source.setSolde(source.getSolde().subtract(montant));</span>
+<span class="fc" id="L58">        destination.setSolde(destination.getSolde().add(montant));</span>
+<span class="fc" id="L59">        repertoireCompte.sauvegarder(source);</span>
+<span class="fc" id="L60">        repertoireCompte.sauvegarder(destination);</span>
+<span class="fc" id="L61">    }</span>
+
+    private void exigerMontantPositif(BigDecimal montant) {
+<span class="pc bpc" id="L64" title="1 of 4 branches missed.">        if (montant == null || montant.compareTo(BigDecimal.ZERO) &lt;= 0) {</span>
+<span class="fc" id="L65">            throw new DonneesInvalidesException(&quot;Le montant doit être strictement positif&quot;);</span>
+        }
+<span class="fc" id="L67">    }</span>
+
+    private void exigerFondsSuffisants(Compte compte, BigDecimal montant) {
+<span class="fc bfc" id="L70" title="All 2 branches covered.">        if (compte.getSolde().compareTo(montant) &lt; 0) {</span>
+<span class="fc" id="L71">            throw new ConflitMetierException(&quot;Solde insuffisant&quot;);</span>
+        }
+<span class="fc" id="L73">    }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.14.202510111229</span></div></body></html>

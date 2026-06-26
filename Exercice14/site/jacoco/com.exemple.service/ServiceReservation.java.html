@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang=""><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>ServiceReservation.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Exercice14</a> &gt; <a href="index.source.html" class="el_package">com.exemple.service</a> &gt; <span class="el_source">ServiceReservation.java</span></div><h1>ServiceReservation.java</h1><pre class="source lang-java linenums">package com.exemple.service;
+
+import com.exemple.exception.ReservationImpossibleException;
+import com.exemple.model.Adherent;
+import com.exemple.model.Ouvrage;
+import com.exemple.model.Reservation;
+import java.util.ArrayDeque;
+import java.util.ArrayList;
+import java.util.Deque;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+<span class="fc" id="L14">public class ServiceReservation {</span>
+
+<span class="fc" id="L16">    private final Map&lt;String, Deque&lt;Reservation&gt;&gt; filesParOuvrage = new HashMap&lt;&gt;();</span>
+
+    public Reservation reserver(Adherent adherent, Ouvrage ouvrage) {
+<span class="fc bfc" id="L19" title="All 2 branches covered.">        if (adherent.estSuspendu()) {</span>
+<span class="fc" id="L20">            throw new ReservationImpossibleException(&quot;Adhérent suspendu&quot;);</span>
+        }
+<span class="fc bfc" id="L22" title="All 2 branches covered.">        if (ouvrage.estDisponible()) {</span>
+<span class="fc" id="L23">            throw new ReservationImpossibleException(&quot;Ouvrage disponible, réservation inutile&quot;);</span>
+        }
+<span class="fc" id="L25">        Reservation reservation = new Reservation(adherent, ouvrage);</span>
+<span class="fc" id="L26">        filesParOuvrage.computeIfAbsent(ouvrage.getId(), cle -&gt; new ArrayDeque&lt;&gt;()).addLast(reservation);</span>
+<span class="fc" id="L27">        return reservation;</span>
+    }
+
+    public List&lt;Reservation&gt; fileDAttente(Ouvrage ouvrage) {
+<span class="fc" id="L31">        return new ArrayList&lt;&gt;(filesParOuvrage.getOrDefault(ouvrage.getId(), new ArrayDeque&lt;&gt;()));</span>
+    }
+
+    public Reservation honorerProchaine(Ouvrage ouvrage) {
+<span class="fc" id="L35">        return filesParOuvrage.getOrDefault(ouvrage.getId(), new ArrayDeque&lt;&gt;()).pollFirst();</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.14.202510111229</span></div></body></html>

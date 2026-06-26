@@ -1,0 +1,11 @@
+GROUP,PACKAGE,CLASS,INSTRUCTION_MISSED,INSTRUCTION_COVERED,BRANCH_MISSED,BRANCH_COVERED,LINE_MISSED,LINE_COVERED,COMPLEXITY_MISSED,COMPLEXITY_COVERED,METHOD_MISSED,METHOD_COVERED
+Exercice14,com.exemple.horloge,HorlogeSysteme,0,5,0,0,0,2,0,2,0,2
+Exercice14,com.exemple.exception,ReservationImpossibleException,0,4,0,0,0,2,0,1,0,1
+Exercice14,com.exemple.exception,EmpruntImpossibleException,0,4,0,0,0,2,0,1,0,1
+Exercice14,com.exemple.service,ServiceReservation,0,70,0,4,0,11,0,7,0,5
+Exercice14,com.exemple.service,ServicePret,0,79,0,6,0,19,0,7,0,4
+Exercice14,com.exemple.model,Pret,3,41,0,0,1,16,1,8,1,8
+Exercice14,com.exemple.model,Ouvrage,3,22,0,0,1,9,1,4,1,4
+Exercice14,com.exemple.model,Reservation,3,12,0,0,1,5,1,2,1,2
+Exercice14,com.exemple.model,Adherent,3,40,0,4,1,12,1,7,1,5
+Exercice14,com.exemple.model,StatutAdherent,0,15,0,0,0,3,0,1,0,1
